@@ -28,43 +28,31 @@ echo(_).
 
     % Développement
         % Vrai si X est une variable, si T est composé et si X n'apparait pas dans T
-        regle(X?=T,expand) :- var(X), compound(T), occurCheck(X,T).
+        regle(X?=T,expand) :- var(X), compound(T), occur_check(X,T).
 
     % Teste d'ocurrence
         % Vrai si X =/= T et si X apparait dans T
-        regle(X?=T,check) :- X/=T, not occurCheck(X,T).
+        regle(X?=T,check) :- X\==T, \+occur_check(X,T).
 
     % Orientation
         % Vrai si T n'est pas une variable et si X en est une
         regle(T?=X,orient) :- nonvar(T), var(X).
 
     % Decomposition
-        % Vrai
-        regle(S?=T,decompose) :- not regle(S?=T,expand) ,functor(S,SF,SA),functor(T,TF,TA),SF==TF,SA==TA.
+        % Vrai si on ne peut appliquer le règle de développement et si S et T sont deux fonctions de même sybole et de même arité
+        regle(S?=T,decompose) :- \+regle(S?=T,expand), !, functor(S,SF,SA), functor(T,TF,TA), SF==TF, SA==TA.
 
-    % Conflit
-        % Vrai
-        regle(S?=T,clash) :- not (functor(S,F,A)=functor(S,F,A)),!.
+   % Conflit
+        % Vrai si S et T sont deux fonctions de différents symboles ou de différentes arités
+        regle(S?=T,clash) :- \+(functor(S,F,A)=functor(T,F,A)).
 
         
         
 
+% Fonction de teste d'ocurrence (V pas dans T ?)
 
+    occur_check(V,T) :- term_variables(T, L), not_in(V,L), write(L).
 
+    not_in(_X,[]).
+    not_in(X,[H|T]):- var(X), !, X\==H, not_in(X,T),!.
 
-
-
-
-
-
-
-
-
-regle(f(a) ?= f(b),decompose)
-
-
-
-sum([], 0) :- !.
-sum([T|Q], Somme) :- sum(Q, S), Somme is T + S.
- 
-writeSum :-  sum([1,2,3,4,5,6], S), write(S), nl.
