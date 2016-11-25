@@ -49,21 +49,21 @@ echo(_).
                 % Vrai si S et T sont deux fonctions de differents symboles ou de differentes arites
                 regle(S?=T,clash) :- \+(functor(S,F,A)=functor(T,F,A)).
 
-    % Application des regles : transforme le systeme d equations P en le systeme dequations Q par application de la regle de transformation R lequation E
+    % Application des regles : transforme le systeme d equations P en le systeme dequations Q par application de la regle de transformation sur lequation E
         % Renomage
-            reduit(rename,E,P,Q) :- .
+            reduit(rename,E,P,Q) :-write(E+P+Q+"\n").
         % Simplification
-            reduit(simplify,E,P,Q) :- .
+            reduit(simplify,E,P,Q) :-write('a faire\n'+E+P+Q).
         % Developpement
-            reduit(expand,E,P,Q) :- .
+            reduit(expand,E,P,Q) :-write('a faire\n'+E+P+Q).
         % Teste d'ocurrence
-            reduit(check,E,P,Q) :- .
+            reduit(check,E,P,Q) :-write('a faire\n'+E+P+Q).
         % Orientation
-            reduit(orient,E,P,Q) :- .
+            reduit(orient,E,P,Q) :-write('a faire\n'+E+P+Q).
         % Decomposition
-            reduit(decompose,E,P,Q) :- .
+            reduit(decompose,E,P,Q) :-write('a faire\n'+E+P+Q).
         % Conflit
-            reduit(clash,E,P,Q) :- .
+            reduit(clash,E,P,Q) :-write('a faire\n'+E+P+Q).
 
 
 
@@ -76,3 +76,35 @@ echo(_).
             not_in(_X,[]).
             not_in(X,[H|T]):- var(X), !, X\==H, not_in(X,T),!.
 
+:- initialization main.
+
+main :-
+  write('execution du programme\n'),
+  write('----------------------------------------------------------------\n'),
+  
+  reduit(rename,n,b,v),
+  
+  
+  write('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n').
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
