@@ -1,25 +1,25 @@
 % Operateur ?=
 :- op(20,xfy,?=).
 
-% Prédicats d'affichage fournis
+% Predicats d'affichage fournis
 
-% set_echo: ce prédicat active l'affichage par le prédicat echo
+% set_echo: ce predicat active l'affichage par le predicat echo
 set_echo :- assert(echo_on).
 
-% clr_echo: ce prédicat inhibe l'affichage par le prédicat echo
+% clr_echo: ce predicat inhibe l'affichage par le predicat echo
 clr_echo :- retractall(echo_on).
 
-% echo(T): si le flag echo_on est positionné, echo(T) affiche le terme T
-%          sinon, echo(T) réussit simplement en ne faisant rien.
+% echo(T): si le flag echo_on est positionne, echo(T) affiche le terme T
+%          sinon, echo(T) reussit simplement en ne faisant rien.
 
 echo(T) :- echo_on, !, write(T).
 echo(_).
 
 
 
-% Regles 
+% Regles
 
-    % Conditions d'utilisation des règles'
+    % Conditions d'utilisation des regles
 
         % Renomage
             % Vrai si les X et T sont des variables
@@ -29,8 +29,8 @@ echo(_).
             % Vrai si X est une variable et T une constante
             regle(X?=T,simplify) :- var(X), atomic(T).
 
-        % Développement
-            % Vrai si X est une variable, si T est composé et si X n'apparait pas dans T
+        % Developpement
+            % Vrai si X est une variable, si T est compose et si X n'apparait pas dans T
             regle(X?=T,expand) :- var(X), compound(T), occur_check(X,T).
 
         % Teste d'ocurrence
@@ -42,19 +42,19 @@ echo(_).
             regle(T?=X,orient) :- nonvar(T), var(X).
 
         % Decomposition
-            % Vrai si on ne peut appliquer le règle de développement et si S et T sont deux fonctions de même sybole et de même arité
+            % Vrai si on ne peut appliquer le regle de developpement et si S et T sont deux fonctions de meme symbole et de meme arite
             regle(S?=T,decompose) :- \+regle(S?=T,expand), !, functor(S,SF,SA), functor(T,TF,TA), SF==TF, SA==TA.
 
         % Conflit
-                % Vrai si S et T sont deux fonctions de différents symboles ou de différentes arités
+                % Vrai si S et T sont deux fonctions de differents symboles ou de differentes arites
                 regle(S?=T,clash) :- \+(functor(S,F,A)=functor(T,F,A)).
 
-    % Application des règles : transforme le système d’équations P en le système d’équations Q par application de la règle de transformation R à l’équation E
+    % Application des regles : transforme le systeme d equations P en le systeme dequations Q par application de la regle de transformation R lequation E
         % Renomage
-            reduit(rename,E,P,Q) :- . 
+            reduit(rename,E,P,Q) :- .
         % Simplification
             reduit(simplify,E,P,Q) :- .
-        % Développement
+        % Developpement
             reduit(expand,E,P,Q) :- .
         % Teste d'ocurrence
             reduit(check,E,P,Q) :- .
@@ -66,8 +66,8 @@ echo(_).
             reduit(clash,E,P,Q) :- .
 
 
-        
-        
+
+
     % Helpers
         % Fonction de teste d'ocurrence (V pas dans T ?)
 
