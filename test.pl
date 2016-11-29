@@ -33,20 +33,21 @@ regle(T1?=T2,clash):- \+(functor(T1,F,A)=functor(T2,F,A)),!.
 
         % Fonction de teste de non appartenance a une liste
             not_in(_X,[]).
-            not_in(X,[H|T])
+            not_in(X,[H|T]).
 
 % reduit(R,E,P,Q) 
 
- reduit(rename,X?=T,[X?=T|Rest],Q) :-  
+
   %on unifie l'equation et on s'occupe du reste Q
+ reduit(rename,X?=T, [ X?=T | Rest ] ,Q) :-  X=T,Q=Rest.  
+ 
+ reduit(simplify,X?=T,[X?=T|Rest],Q) :- 
   X=T,Q=Rest.
- reduit(simplify,X?=T,[X?=T|Rest],Q) :-
+ reduit(expand,X?=T,[X?=T|Rest],Q) :- 
   X=T,Q=Rest.
- reduit(expand,X?=T,[X?=T|Rest],Q) :-
+ reduit(orient,X?=T,[X?=T|Rest],Q) :- 
   X=T,Q=Rest.
- reduit(orient,X?=T,[X?=T|Rest],Q) :-
-  X=T,Q=Rest.
- reduit(decompose,X?=T,[X?=T|Rest],Q) :-
+ reduit(decompose,X?=T,[X?=T|Rest],Q) :- 
   X=..X1, %transforme une fonction ou un prédicat p(X1,..,Xn) en une liste [p,X1,..,Xn]
   delete_one(X1,X_res),  %pour supprimer le premier élément de la liste (le nom du predicat)
   T=..T1, %pareil avec la seconde partie de l'equation
@@ -57,7 +58,7 @@ regle(T1?=T2,clash):- \+(functor(T1,F,A)=functor(T2,F,A)),!.
 
 %predicat pour supprimer le premier élément
 delete_one([_|Z],K) :- K = Z,!.
-delete_one([]):- [],!.
+delete_one([]):- !.
 
 %predicat pour décomposer : X1?=T1...T1?=Tn
 dec_liste([A1|Rest1],[A2|Rest2],Res) :- dec_liste(Rest1,Rest2,Res1),append([A1?=A2],Res1,Res),!.
