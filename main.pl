@@ -31,7 +31,7 @@ echo(_).
 
         % Developpement
             % Vrai si X est une variable, si T est compose et si X n'apparait pas dans T
-            regle(X?=T,expand)          :- var(X), compound(T), occur_check(X,T).
+            regle(X?=T,expand)          :- echo('application expand \n'),var(X), compound(T), !, \+occur_check(X,T).
 
         % Teste d'ocurrence
             % Vrai si X =/= T et si X apparait dans T
@@ -42,27 +42,29 @@ echo(_).
             regle(T?=X,orient)          :- nonvar(T), var(X).
 
         % Decomposition
-            % Vrai si on ne peut appliquer le regle de developpement et si S et T sont deux fonctions de meme symbole et de meme arite
-            regle(S?=T,decompose)       :- \+regle(S?=T,expand), !, functor(S,SF,SA), functor(T,TF,TA), SF==TF, SA==TA.
+            % Vrai si S et T sont deux fonctions de meme symbole et de meme arite
+            regle(S?=T,decompose)       :- echo('test decompose \n'),nonvar(S), nonvar(T),!, functor(S,SF,SA), functor(T,TF,TA), SF==TF, SA==TA.
 
         % Conflit
-            % Vrai si S et T sont deux fonctions de differents symboles ou de differentes arites
-            regle(S?=T,clash)           :- \+(functor(S,F,A)=functor(T,F,A)).
+            % Vrai si F et G sont deux fonctions de differents symboles ou de differentes arites
+            regle(F?=G,clash)           :- \+(functor(F,F,A)=functor(G,F,A)).
 
 
 
     % Application des regles
 
         % Renomage
-            rename(X?=T,[X?=T|L],Q)     :- X=T,Q=L.
+            rename(X?=T,[X?=T|L],Q)     :- echo('application rename \n'),X=T,Q=L.
         % Simplification
-            simplify(X?=T,[X?=T|L],Q)   :- X=T,Q=L.
+            simplify(X?=T,[X?=T|L],Q)   :- echo('application simplify \n'),X=T,Q=L.
         % Developpement
-            expand(X?=T,[X?=T|L],Q)     :- X=T,Q=L.
+            expand(X?=T,[X?=T|L],Q)     :- echo('application expand \n'),X=T,Q=L.
         % Orientation
-            orient(T?=X,[X?=T|L],Q)     :- X=T,Q=L.
+            orient(T?=X,[X?=T|L],Q)     :- echo('application orient \n'),append(X?=T,L,Q).
         % Decomposition
-            decompose(X?=T,[X?=T|L],Q)  :- term_params(X, XL), echo(X), term_params(T, TL), make_list(XL, TL, LR), append(LR,L,Q).
+            decompose(X?=T,[X?=T|L],Q)  :- echo('application decompose \n'),term_params(X, XL), term_params(T, TL), make_list(XL, TL, LR), echo('list \n'), append(LR,L,Q).
+
+
 
     % Reduction : transforme le systeme d equations P en le systeme dequations Q par application de la regle de transformation sur lequation E
 
@@ -83,12 +85,12 @@ echo(_).
     % Unification
 
 
-        unifie([])                      :- echo('system : '), echo(L), echo('\n'), echo('Fin de l\'unification\n').
+        unifie([])                    :- echo('\n\n'), echo('Fin de l\'unification\n').
     
 
 
         % Renomage
-            unifie([X?=T|L])         :- regle(X?=T,rename), !, echo('system : '), echo([X?=T|L]), echo('\n'), echo('rename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q), !. 
+            unifie([X?=T|L])         :- regle(X?=T,rename), !, echo('system : '), echo([X ?=T |L]), echo('\n'), echo('rename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q), !. 
 
         % Simplification
             unifie([X?=T|L])         :- regle(X?=T,simplify), !, echo('system : '), echo([X?=T|L]), echo('\n'), echo('simplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), unifie(Q), !.
@@ -103,7 +105,7 @@ echo(_).
             unifie([X?=T|L])         :- regle(X?=T,orient), !, echo('system : '), echo([X?=T|L]), echo('\n'), echo('orient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), unifie(Q), !.
 
         % Decomposition
-            unifie([X?=T|L])         :- regle(X?=T,decompose), !, echo('system : '), echo([X?=T|L]), echo('\n'), echo('decompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q), !.
+            unifie([X?=T|L])         :- regle(X?=T,decompose), !, echo('system : '), echo([X ?=T |L]), echo('\n'), echo('decompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q), !.
 
         % Conflit
             unifie([X?=T|L])         :- regle(X?=T,clash), !, echo('system : '), echo([X?=T|L]), echo('\n'), echo('clash : '), echo(X?=T), echo('\n'), fail, !.
@@ -111,13 +113,8 @@ echo(_).
 
 
     % Helpers
-        % Fonction de teste d'ocurrence (V pas dans T ?)
-            occur_check(V,T)            :- term_variables(T, L), not_in(V,L).
-
-
-        % Fonction de teste de non appartenance a une liste
-            not_in(_X,[]).
-            not_in(X,[H|T])             :- var(X), !, X\==H, not_in(X,T),!.
+        % Fonction de teste d'ocurrence (Vrai si V n'est pas dans T)
+            occur_check(V,T)            :-  compound(T), !, contains_var(V,T).
 
 
         % Fonction de création de liste [X?=T|L] à partire de deux listes [X|L1] et [T|L2]
@@ -129,7 +126,7 @@ echo(_).
         % Fonction qui retourne les parametres d un prédicat
             term_params(X,L)            :- \+is_list(X), !, X=..XP, term_params(XP,L).
             term_params([_|P],L)        :- L=P.
-            term_params([])             :- [].
+            term_params([],L)           :- L=L.
 
 
 
@@ -143,7 +140,7 @@ echo(_).
 
 main :-
   set_echo,
-  write('Algorithme d unification'),
+  write('Algorithme d unification\n'),
   write('----------------------------------------------------------------\n').
   
 
