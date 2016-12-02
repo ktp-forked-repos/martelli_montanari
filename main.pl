@@ -110,33 +110,27 @@ echo(_).
         % Conflit
             unifie([X?=T|L])         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 
-<<<<<<< HEAD
-		% unification par chois de strategie 
-		
-			unifie([X?=T|L],rename)  :-  .
-			
-		
-=======
+
 		% unifie regle spe
 		
 		% Renomage
-            unifie([X?=T|L],rename)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q), !. 
+            unifie([X?=T|L],rename)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q,pondere), !. 
 
         % Simplification
-            unifie([X?=T|L],simplify)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), unifie(Q), !.
+            unifie([X?=T|L],simplify)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), unifie(Q,pondere), !.
 
         % Developpement
-            unifie([X?=T|L],expand)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), unifie(Q), !.
->>>>>>> 20b5f4ea72596e6c19b8904b24c9db193eafebda
+            unifie([X?=T|L],expand)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), unifie(Q,pondere), !.
+
 
         % Teste d'ocurrence
             unifie([X?=T|L],check)         :- regle(X?=T,check), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tcheck : '), echo(X?=T), echo('\n'), fail, !.
 
         % Orientation
-            unifie([X?=T|L],orient)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), unifie(Q), !.
+            unifie([X?=T|L],orient)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), unifie(Q,pondere), !.
 
         % Decomposition
-            unifie([X?=T|L],decompose)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q), !.
+            unifie([X?=T|L],decompose)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q,pondere), !.
 
         % Conflit
             unifie([X?=T|L],clash)         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
@@ -153,20 +147,22 @@ echo(_).
 		% unifier pondere
 		%suite de if then else
 				% ( true(if) ->(then) A ; (else) b  )
-		unifie([X?=T|L],pondere):- N = true ,	( (regle(X?=T,check),N) -> write("check"),N=false ; 
-											write("!check")),
-									( (regle(X?=T,clash),N) -> write("clash") ,N=false; 
-											write("!clash")),
-									( (reduit(rename,X?=T,[X?=T|L],Q),N )-> unifie(Q,pondere),N=false ; % soi ca
-											write("!rename")),
-									( (reduit(simplify,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
-											write("!simplify")),
-									( (reduit(orient,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
-											write("!orient")),
-									( (reduit(decompose,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; % soit ca  faut en discuter x)
-											write("!decompose")),
-									( (reduit(expand,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
-											write("!expand")).
+		unifie([X?=T|L],pondere):- 	
+									( (regle(X?=T,clash)) -> write("clash"),
+											unifie([X?=T|L],clash) ; 
+											( (regle(X?=T,check)) -> write("check"),
+											unifie([X?=T|L],check) ; 
+												( (regle(X?=T,rename)) -> write("rename"),
+													unifie([X?=T|L],rename) ; 
+													( (regle(X?=T,simplify)) -> write("simplify"),
+													unifie([X?=T|L],simplify) ; 
+														( (regle(X?=T,orient)) -> write("orient"),
+														unifie([X?=T|L],orient) ; 
+															( (regle(X?=T,decompose)) -> write("decompose"),
+																unifie([X?=T|L],decompose) ; 
+																( (regle(X?=T,expand)) -> write("expand"),
+																unifie([X?=T|L],expand) ; 
+																write("!check")))))))).
 		
 		
     % Helpers
@@ -198,13 +194,8 @@ main :-
   set_echo,
   write('Algorithme d unification\n'),
   write('----------------------------------------------------------------\n'),
-<<<<<<< HEAD
-  swap(rename).
-  
-  
-=======
-  unifie([f(X,Y) ?= f(g(Z),h(a)), Z ?= f(X)],pondere).
->>>>>>> 20b5f4ea72596e6c19b8904b24c9db193eafebda
+
+  unifie([f(X,Y) ?= f(g(Z),h(a)), Z ?= f(X)]).
   
 
   
