@@ -145,19 +145,19 @@ echo(_).
 		% unifier pondere
 		%suite de if then else
 				% ( true(if) ->(then) A ; (else) b  )
-		unifie([X?=T|L],pondere):- 	( unifie([X?=T|L],check) -> write("check") ; 
+		unifie([X?=T|L],pondere):- N = true ,	( (regle(X?=T,check),N) -> write("check"),N=false ; 
 											write("!check")),
-									( unifie([X?=T|L],clash) -> write("clash") ; 
+									( (regle(X?=T,clash),N) -> write("clash") ,N=false; 
 											write("!clash")),
-									( unifie([X?=T|L],rename) -> reduit(rename,X?=T,[X?=T|L],Q),unifie(Q,pondere) ; % soi ca
+									( (reduit(rename,X?=T,[X?=T|L],Q),N )-> unifie(Q,pondere),N=false ; % soi ca
 											write("!rename")),
-									( unifie([X?=T|L],simplify) -> write("simplify") ; 
+									( (reduit(simplify,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
 											write("!simplify")),
-									( unifie([X?=T|L],orient) -> write("orient") ; 
+									( (reduit(orient,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
 											write("!orient")),
-									( unifie([X?=T|L],decompose) -> unifie(L,pondere) ; % soit ca  faut en discuter x)
+									( (reduit(decompose,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; % soit ca  faut en discuter x)
 											write("!decompose")),
-									( unifie([X?=T|L],expand) -> write("expand") ; 
+									( (reduit(expand,X?=T,[X?=T|L],Q),N) -> unifie(Q,pondere) ,N=false; 
 											write("!expand")).
 		
 		
