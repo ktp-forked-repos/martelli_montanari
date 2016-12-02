@@ -38,7 +38,7 @@ echo(_).
             regle(X?=T,check)           :- not(X == T), var(X), !, occur_check(X,T).
 
         % Orientation
-            % Vrai si T n'est pas une variable et si X en est une
+            % Vrai si T n'est pas une variable et si X en est une variable
             regle(T?=X,orient)          :- var(X), nonvar(T).
 
         % Decomposition
@@ -110,7 +110,11 @@ echo(_).
         % Conflit
             unifie([X?=T|L])         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('clash : '), echo(X?=T), echo('\n'), fail, !.
 
-
+		% unification par chois de strategie 
+		
+			unifie([X?=T|L],rename)  :-  .
+			
+		
 
     % Helpers
         % Fonction de teste d'ocurrence (Vrai si V n'est pas dans T)
@@ -130,7 +134,7 @@ echo(_).
 
 
 
-
+		% 
 
 
 
@@ -141,7 +145,10 @@ echo(_).
 main :-
   set_echo,
   write('Algorithme d unification\n'),
-  write('----------------------------------------------------------------\n').
+  write('----------------------------------------------------------------\n'),
+  swap(rename).
+  
+  
   
 
   
