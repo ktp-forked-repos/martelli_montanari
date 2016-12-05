@@ -135,9 +135,33 @@ echo(_).
         % Conflit
             unifie([X?=T|L],clash)         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 
+		
+		
+		%unifie random random_between(1,7,F)
+		
+			unifie(Q,random)			:- random_between(1,7,F), unifie(Q,F) .
+				
+            unifie([X?=T|L],1)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q),random_between(1,7,F), unifie(Q,F), !. 
+
+            unifie([X?=T|L],2)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
+
+            unifie([X?=T|L],3)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
+
+            unifie([X?=T|L],4)         :- regle(X?=T,check), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tcheck : '), echo(X?=T), echo('\n'), fail, !.
+
+            unifie([X?=T|L],5)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
+
+            unifie([X?=T|L],6)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
+
+            unifie([X?=T|L],7)         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 			
-			
-		% unifie 1er choix
+			unifie([],1)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],2)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],3)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],4)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],5)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],6)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+			unifie([],7)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
 		
 		unifie([X?=T|L],premier)         :- unifie([X?=T|L]).
 		
@@ -161,8 +185,7 @@ echo(_).
 															( (regle(X?=T,decompose)) ->
 																unifie([X?=T|L],decompose) ; 
 																( (regle(X?=T,expand)) ->
-																unifie([X?=T|L],expand) ; 
-																write("!check")))))))).
+																unifie([X?=T|L],expand) ))))))).
 		
 		
     % Helpers
@@ -196,6 +219,7 @@ trace_unif(P,S) :- set_echo, unifie(P,S).
 main :-
     write('Algorithme d unification\n'),
     write('----------------------------------------------------------------\n'),
+	
     write('Indiquer une liste a unifier : \n'),
     read(P),
     write('Indiquer une stratégie : \n'),
