@@ -60,7 +60,7 @@ echo(_).
         % Developpement
             expand(X?=T,[X?=T|L],Q)     :- X=T,Q=L.
         % Orientation
-            orient(T?=X,[X?=T|L],Q)     :- append(X?=T,L,Q).
+            orient(T?=X,[T?=X|L],Q)     :- append([X?=T],L,Q).
         % Decomposition
             decompose(X?=T,[X?=T|L],Q)  :- term_params(X, XL), term_params(T, TL), make_list(XL, TL, LR), append(LR,L,Q).
 
@@ -85,7 +85,9 @@ echo(_).
     % Unification
 
 
-            unifie([])                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+            unifie([])                      :- echo('\n\n'), echo('Fin de l\'unification\n').
+            unifie([],_)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+
     
 
 
@@ -111,61 +113,56 @@ echo(_).
             unifie([X?=T|L])         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 
 
+
+
+
 		% unifie regle spe
+
+            
 		
 		% Renomage
-            unifie([X?=T|L],rename)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q,choix_pondere), !. 
+            unifie([X?=T|L],rename, CHOIX)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q), unifie(Q,CHOIX), !. 
 
         % Simplification
-            unifie([X?=T|L],simplify)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), unifie(Q,choix_pondere), !.
+            unifie([X?=T|L],simplify, CHOIX)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), unifie(Q,CHOIX), !.
 
         % Developpement
-            unifie([X?=T|L],expand)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), unifie(Q,choix_pondere), !.
-
-
-        % Teste d'ocurrence
-            unifie([X?=T|L],check)         :- regle(X?=T,check), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tcheck : '), echo(X?=T), echo('\n'), fail, !.
+            unifie([X?=T|L],expand, CHOIX)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), unifie(Q,CHOIX), !.
 
         % Orientation
-            unifie([X?=T|L],orient)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), unifie(Q,choix_pondere), !.
+            unifie([X?=T|L],orient, CHOIX)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), unifie(Q,CHOIX), !.
 
         % Decomposition
-            unifie([X?=T|L],decompose)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q,choix_pondere), !.
+            unifie([X?=T|L],decompose, CHOIX)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), unifie(Q,CHOIX), !.
 
-        % Conflit
-            unifie([X?=T|L],clash)         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 
 		
 		
-		%unifie random random_between(1,7,F)
+		%unifie choix_aleatoire
 		
-			unifie(Q,random)			:- random_between(1,7,F), unifie(Q,F) .
-				
-            unifie([X?=T|L],1)         :- regle(X?=T,rename), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\trename : '), echo(X?=T), echo('\n'), reduit(rename,X?=T,[X?=T|L],Q),random_between(1,7,F), unifie(Q,F), !. 
-
-            unifie([X?=T|L],2)         :- regle(X?=T,simplify), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tsimplify : '), echo(X?=T), echo('\n'), reduit(simplify,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
-
-            unifie([X?=T|L],3)         :- regle(X?=T,expand), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\texpand : '), echo(X?=T), echo('\n'), reduit(expand,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
-
-            unifie([X?=T|L],4)         :- regle(X?=T,check), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tcheck : '), echo(X?=T), echo('\n'), fail, !.
-
-            unifie([X?=T|L],5)         :- regle(X?=T,orient), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\torient : '), echo(X?=T), echo('\n'), reduit(orient,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
-
-            unifie([X?=T|L],6)         :- regle(X?=T,decompose), !, echo('\nsystem : '), echo([X ?=T |L]), echo('\n'), echo('\tdecompose : '), echo(X?=T), echo('\n'), reduit(decompose,X?=T,[X?=T|L],Q), random_between(1,7,F), unifie(Q,F), !.
-
-            unifie([X?=T|L],7)         :- regle(X?=T,clash), !, echo('\nsystem : '), echo([X?=T|L]), echo('\n'), echo('\tclash : '), echo(X?=T), echo('\n'), fail, !.
 			
-			unifie([],1)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],2)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],3)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],4)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],5)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],6)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
-			unifie([],7)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+
+            %unifie([X?=T|L],choix_aleatoire)	:- unifie_rand([X?=T|L],[rename,simplify,expand,check,orient,decompose,clash]).
+
+            unifie([X?=T|L],choix_aleatoire)	:-  random_member(F,[rename,simplify,expand,check,orient,decompose,clash]),
+                                                    (unifie([X?=T|L],F,choix_aleatoire)) 
+                                                    -> 
+                                                            (true)
+                                                    ;
+                                                            (unifie([X?=T|L],choix_aleatoire)) .
+
+                                    
+
+
+            unifie_rand([X?=T|L], LC)			:-  random_member(F,LC), (\+unifie([X?=T|L],F,choix_aleatoire)) -> (delete(LC,F,NL),unifie_rand([X?=T|L], NL)) ; true .
+            unifie_rand(_, [])			        :- fail .
+				
+            
+			
+            
 		
-		unifie([X?=T|L],premier)         :- unifie([X?=T|L]).
-		
-		unifie([],choix_pondere)                    :- echo('\n\n'), echo('Fin de l\'unification\n').
+		    unifie([X?=T|L],choix_premier)         :- unifie([X?=T|L]).
+
 		
 		% clash, check > rename, simplify > orient > decompose > expand
 		% unifier choix_pondere
@@ -173,19 +170,19 @@ echo(_).
 				% ( true(if) ->(then) A ; (else) b  )
 		unifie([X?=T|L],choix_pondere):- 	
 									( (regle(X?=T,clash)) ->
-											unifie([X?=T|L],clash) ; 
+											unifie([X?=T|L],clash,choix_pondere) ; 
 											( (regle(X?=T,check)) ->
-											unifie([X?=T|L],check) ; 
+											unifie([X?=T|L],check,choix_pondere) ; 
 												( (regle(X?=T,rename)) ->
-													unifie([X?=T|L],rename) ; 
+													unifie([X?=T|L],rename,choix_pondere) ; 
 													( (regle(X?=T,simplify)) ->
-													unifie([X?=T|L],simplify) ; 
+													unifie([X?=T|L],simplify,choix_pondere) ; 
 														( (regle(X?=T,orient)) ->
-														unifie([X?=T|L],orient) ; 
+														unifie([X?=T|L],orient,choix_pondere) ; 
 															( (regle(X?=T,decompose)) ->
-																unifie([X?=T|L],decompose) ; 
+																unifie([X?=T|L],decompose,choix_pondere) ; 
 																( (regle(X?=T,expand)) ->
-																unifie([X?=T|L],expand) ))))))).
+																unifie([X?=T|L],expand,choix_pondere) ))))))).
 		
 		
     % Helpers
@@ -218,13 +215,14 @@ trace_unif(P,S) :- set_echo, unifie(P,S).
 
 main :-
     write('Algorithme d unification\n'),
-    write('----------------------------------------------------------------\n'),
+    set_echo,
+    write('----------------------------------------------------------------\n')%,
 	
-    write('Indiquer une liste a unifier : \n'),
-    read(P),
-    write('Indiquer une stratégie : \n'),
-    read(S),
-    trace_unif(P,S)
+    %write('Indiquer une liste a unifier : \n'),
+    %read(P),
+    %write('Indiquer une stratégie : \n'),
+    %read(S),
+    %trace_unif(P,S)
 .
 
   
