@@ -253,7 +253,7 @@ trace_unif(P,S) :- set_echo, unifie(P,S).
 
 main :-
 write('Algorithme d unification\n'),
-write('----------------------------------------------------------------\n')%,
+write('----------------------------------------------------------------\n'),
 
 write('Indiquer une liste a unifier : \n'),
 read(P),
