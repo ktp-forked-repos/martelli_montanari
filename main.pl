@@ -27,7 +27,7 @@ regle(X?=T,rename)          :- var(X), var(T).
 
 % Simplification
 % Vrai si X est une variable et T une constante
-regle(X?=T,simplify)        :- var(X), atomic(T).
+regle(X?=T,simplify)        :- var(X), atomic(T),!; atomic(X), atomic(T), X==T, !.
 
 % Developpement
 % Vrai si X est une variable, si T est compose et si X n'apparait pas dans T
