@@ -16,6 +16,13 @@
 [f(X,y)?=f(y,X)]. 
 
 
+
 // non unif
 
 [f(b,a)?=f(g(y),y)].
+
+[f(X,X)?=f(g(y),y)].
+
+[f(X,y)?=f(u,v,w)].
+
+[f(X,g(y,z),a)?=f(g(v,z),x,z)].
