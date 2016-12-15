@@ -254,7 +254,7 @@ trace_unif(P,S) :- set_echo, unifie(P,S).
 main :-
 write('Algorithme d unification\n'),
 write('----------------------------------------------------------------\n'),
-write('Unification de : [X?=g(y),a?=y]'),
+write('Unification de : [f(b,a)?=f(g(y),y)] (non unifiable)'),
 
 read(_),
 
@@ -267,16 +267,16 @@ aleatoire
 
 premier :- 
 write('choix_premier : \n'),
-trace_unif([X?=g(y),a?=y],choix_premier),
+trace_unif([f(b,a)?=f(g(y),y)],choix_premier),
 read(_).
 
 pondere :- write('choix_pondere : \n'),
-trace_unif([X?=g(y),a?=y],choix_pondere),
+trace_unif([f(b,a)?=f(g(y),y)],choix_pondere),
 read(_).
 
 aleatoire :- 
 write('choix_aleatoire : \n'),
-trace_unif([X?=g(y),a?=y],choix_aleatoire),
+trace_unif([f(b,a)?=f(g(y),y)],choix_aleatoire),
 read(_).
 
 
