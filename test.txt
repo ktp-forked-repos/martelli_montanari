@@ -1,0 +1,21 @@
+// exemple du sujet qui doit marcher 
+
+[f(X,Y) ?= f(g(Z),h(a)), Z ?= f(Y)].
+
+// exemple du sujet qui ne doit pas marche
+
+[f(X,Y) ?= f(g(Z),h(a)), Z ?= f(X)].
+
+// exemple du cours
+
+
+// unif  
+
+[X?=g(y),a?=y].
+
+[f(X,y)?=f(y,X)]. 
+
+
+// non unif
+
+[f(b,a)?=f(g(y),y)].
